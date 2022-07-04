@@ -1,9 +1,5 @@
 using Documenter, ACS
 
-makedocs(sitename="Advanced Chemometrics and Statistics Course UvA")
-
-
-
 makedocs(
     modules = [Documenter, ACS],
     build = "build",
