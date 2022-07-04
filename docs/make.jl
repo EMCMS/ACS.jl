@@ -18,4 +18,6 @@ makedocs(
 
 deploydocs(
     repo = "github.com/EMCMS/ACS.jl.git",
+    target = "build",
+    push_preview = true,
 )
