@@ -1,10 +1,12 @@
 using Documenter, ACS
 
+push!(LOAD_PATH,"../src/")
+
 makedocs(
     modules = [Documenter, ACS],
     build = "build",
     clean = true,
-    sitename = "ACS at UvA",
+    sitename = "ACS.jl",
     pages = [
         "Home" => "index.md",
         "Preparation" => "prep.md",
