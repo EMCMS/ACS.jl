@@ -1,6 +1,6 @@
 using Documenter, ACS
 
-push!(LOAD_PATH,"../src/")
+#push!(LOAD_PATH,"../src/")
 
 makedocs(
     modules = [Documenter, ACS],
