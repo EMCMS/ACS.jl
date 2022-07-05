@@ -5,6 +5,7 @@ push!(LOAD_PATH,"../src/")
 makedocs(
     modules = [Documenter, ACS],
     build = "build",
+    format = Documenter.HTML(),
     clean = true,
     sitename = "ACS.jl",
     pages = [

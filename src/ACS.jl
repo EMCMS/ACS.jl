@@ -14,7 +14,7 @@ using ScikitLearnBase
 using ScikitLearn 
 using ScikitLearn.Skcore: @sk_import
 using Clustering
-import StatPlots as sp 
+#import StatPlots as sp 
 using Conda
 using Distributions
 using Distances 
