@@ -1,6 +1,7 @@
+#push!(LOAD_PATH,"../src/")
 using Documenter, ACS
 
-#push!(LOAD_PATH,"../src/")
+
 
 makedocs(
     modules = [Documenter, ACS],
