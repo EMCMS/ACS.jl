@@ -80,7 +80,7 @@ XtX = transpose(X)*X
 
 ```@example svdex
 
-D = diagm(sqrt.(eigvals(XtX))) # Adiagonal matrix is generated
+D = diagm(sqrt.(eigvals(XtX))) # A diagonal matrix is generated
 V = eigvecs(XtX)
 U = X*V*pinv(D)	
 

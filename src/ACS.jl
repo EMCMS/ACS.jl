@@ -22,7 +22,8 @@ using StatsBase
 using HDF5
 using JLD
 
-export dataset, plot, plot!, scatter, scatter!, xlabel!, ylabel!, title!, @sk_import, eigvals, eigvecs, transpose, svd, diagm
+export dataset, plot, plot!, scatter, scatter!, xlabel!, ylabel!, title!, @sk_import, eigvals, eigvecs, transpose, svd, diagm,
+pinv
 # Write your package code here.
 
 
