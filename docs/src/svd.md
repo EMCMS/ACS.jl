@@ -81,17 +81,78 @@ XtX = transpose(X)*X
 ```@example svdex
 
 D = diagm(sqrt.(eigvals(XtX))) # A diagonal matrix is generated
-V = eigvecs(XtX)
-U = X*V*pinv(D)	
 
 ```
 
+```@example svdex
+
+V = eigvecs(XtX) # Right singular matrix
+
+
+```
+
+```@example svdex
+
+U = X*V*pinv(D)	# Left singular matrix
+
+
+```
+
+#### Builtin function
+
+The same calculations can be done with the fucntion *svd(-)* of ACS package provided via LinearAlgebra.jl package. 
+
+```@example svdex
+
+ out = svd(X)
+
+```
+
+```@example svdex
+
+ D = diagm(out.S) # The singular value matrix
+
+```
+
+```@example svdex
+
+ U = out.U # Left singular matrix
+
+```
+
+```@example svdex
+
+ V = transpose(out.Vt) # Right singular matrix
+
+```
+
+Please note that the builtin function sorts the singular values in descending order and consequently the other two matrices are also sorted following the same. Additionally, for ease of calculations the builtin function generates the mirror image of the *U* and *V* matrices. These differences essentially do not impact your calculations at all, as long as they are limited to what is listed above.
+
 ### Step 3 calculation of ``\hat{X}``
+
+Using both the manual method and the builtin function, you can calculate ``\hat{X}`` following the below operation. 
 
 ```@example svdex
 
 X_hat = U*D*transpose(V)
 
 ```
+## Applications 
 
-The same calculations can be done with the fucntion *svd(-)* of ACS package provided via LinearAlgebra.jl package. 
+As mentioned above **SVD** has several applications in different fields. Here we will focus on three, namely: dimension reduction, clustering/trend analysis, and multivariate regression. 
+
+### Dimension reduction
+
+To show case the power of **SVD** in dimension reduction we will use the *Iris* dataset from [Rdatasets](https://github.com/JuliaStats/RDatasets.jl). 
+
+```@example 
+using ACS
+
+data = dataset("datasets", "iris")
+describe(data) # Simerizes the dataset
+
+```
+
+
+### Clustering and trend analysis
+
