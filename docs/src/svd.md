@@ -2,13 +2,13 @@
 
 ## Introduction
 
-The [**SVD**](https://en.wikipedia.org/wiki/Singular_value_decomposition) is a matrix factorization technique that decomposes any matrix to a unique set of matices. The **SVD** is used for dimension reduction, trend analysis, and potentially for the clustering of a multivariate dataset. **SVD** is an exploratory approach to the data analysis and therefore it is an unsuprevised approach. In other words, you will only need the *X* block matrix. However, where the *Y* matrix/vector is available, it (i.e. *Y*) can be used for building composit models or assess the quality of the clustering. 
+The [**SVD**](https://en.wikipedia.org/wiki/Singular_value_decomposition) is a matrix factorization technique that decomposes any matrix to a unique set of matrices. The **SVD** is used for dimension reduction, trend analysis, and potentially for the clustering of a multivariate dataset. **SVD** is an exploratory approach to the data analysis and therefore it is an unsupervised approach. In other words, you will only need the *X* block matrix. However, where the *Y* matrix/vector is available, it (i.e. *Y*) can be used for building composite models or assess the quality of the clustering. 
 
 ## How? 
 
-In **SVD** the matrix *X_{m \times n}* is decomposed into the matrices *``U_{m \times n}*, *D_{n \times n}``*, and *``V_{n \times n}^{T}``*. The matrix *``U_{m \times n}``* is the left singular matrix and it represents a rotation in the matrix space. The *``D_{n \times n}``* is diagonal matrix and contains the singular values. This matix may be indicated with different symbols such as *``\Sigma_{n \times n}``*. The *``D_{n \times n}``* matrix in the geometrical space represents an act of stratching. Each *singular value* is the degree and/or weight of stratching. We use the notation *``D_{n \times n}``* to remind ourselves that this is a diagonal matrix. Finally, *``V_{n \times n}^{T}``* is called the right singular matrix and is associated with rotation. Overall, **SVD** geometrically is a combination of a rotation, a stratching, and a second rotation.
+In **SVD** the matrix *X_{m \times n}* is decomposed into the matrices *``U_{m \times n}*, *D_{n \times n}``*, and *``V_{n \times n}^{T}``*. The matrix *``U_{m \times n}``* is the left singular matrix and it represents a rotation in the matrix space. The *``D_{n \times n}``* is diagonal matrix and contains the singular values. This matrix may be indicated with different symbols such as *``\Sigma_{n \times n}``*. The *``D_{n \times n}``* matrix in the geometrical space represents an act of stretching. Each *singular value* is the degree and/or weight of stretching. We use the notation *``D_{n \times n}``* to remind ourselves that this is a diagonal matrix. Finally, *``V_{n \times n}^{T}``* is called the right singular matrix and is associated with rotation. Overall, **SVD** geometrically is a combination of a rotation, a stretching, and a second rotation.
 
-The two matrics *``U_{m \times n}``* and *``V_{n \times n}^{T}``* are very special due to their [unitary](https://en.wikipedia.org/wiki/Unitary_matrix) properties.
+The two matrices *``U_{m \times n}``* and *``V_{n \times n}^{T}``* are very special due to their [unitary](https://en.wikipedia.org/wiki/Unitary_matrix) properties.
 
 ```math 
 
@@ -71,7 +71,7 @@ X = [5 -5;-1 7;1 10]
 
 ```@example svdex
 # The function transpose(-) is part of LinearAlgebra.jl package that has been automatically installed via ACS.jl package.
-# Not all the functions of LinearAlgebra.jl are exported within the ACS.jl enviornment. 
+# Not all the functions of LinearAlgebra.jl are exported within the ACS.jl environment. 
 XtX = transpose(X)*X 
 
 ```
@@ -100,7 +100,7 @@ U = X*V*pinv(D)	# Left singular matrix
 
 #### Builtin function
 
-The same calculations can be done with the fucntion *svd(-)* of ACS package provided via LinearAlgebra.jl package. 
+The same calculations can be done with the function *svd(-)* of ACS package provided via LinearAlgebra.jl package. 
 
 ```@example svdex
 
@@ -139,17 +139,100 @@ X_hat = U*D*transpose(V)
 ```
 ## Applications 
 
-As mentioned above **SVD** has several applications in different fields. Here we will focus on three, namely: dimension reduction, clustering/trend analysis, and multivariate regression. 
+As mentioned above **SVD** has several applications in different fields. Here we will focus on three, namely: dimension reduction, clustering/trend analysis, and multivariate regression. This dataset contains five variables (i.e. columns) and 150 measurements (i.e. rows). The last variable "Species" is a categorical variable which defines the flower species. 
 
 ### Dimension reduction
 
 To show case the power of **SVD** in dimension reduction we will use the *Iris* dataset from [Rdatasets](https://github.com/JuliaStats/RDatasets.jl). 
 
-```@example 
+```@example iris
 using ACS
 
 data = dataset("datasets", "iris")
-describe(data) # Simerizes the dataset
+describe(data) # Summarizes the dataset
+
+```
+
+Here we show how **SVD** is used for dimension reduction with the *iris* dataset. First we need to convert the dataset from table (i.e. [dataframe](https://dataframes.juliadata.org/stable/)) to a matrix. For data we can use the function *Matrix(-)* builtin in the julia core language.
+
+```@example iris
+Y = data[!,"Species"]
+X = Matrix(data[:,1:4]); # The first four columns are selected for this
+
+```
+
+Now we can perform **SVD** on the *X* and try to assess the underlying trends in the data. 
+
+```@example iris
+
+ out = svd(X)
+
+```
+
+```@example iris
+
+ D = diagm(out.S) # The singular value matrix
+
+```
+
+```@example iris
+
+ U = out.U # Left singular matrix
+
+```
+
+```@example iris
+
+ V = transpose(out.Vt) # Right singular matrix
+
+```
+
+As you may have noticed, there are four variables in the original data and four non-zero singular values. Each column in the lift singular matrix is associated with one singular value and one row in the *V* matrix. For example the first column of sorted *U* matrix (i.e. via the builtin function) is directly connected to the first singular value of 95.9 and the first row of the matrix *V*. With all four singular values we can describe 100% of variance in the data (i.e. ``\hat{X} = X``). By removing the smaller or less important singular values we can reduce the number of dimensions in the data. We can calculate the variance explained by each singular value via two different approaches. 
+
+```@example iris
+
+ var_exp = diag(D) ./ sum(D) # diag() selects the diagonal values in a matrix 
+
+
+```
+
+```@example iris
+
+ var_exp_cum = cumsum(diag(D)) ./ sum(D) # cumsum() calculates the cumulative sum 
+
+
+```
+
+```@example iris
+
+ scatter(1:length(var_exp),var_exp,label="Individual")
+ plot!(1:length(var_exp),var_exp,label=false)
+
+ scatter!(1:length(var_exp),var_exp_cum,label="Cumulative")
+ plot!(1:length(var_exp),var_exp_cum,label=false)
+ xlabel!("Nr Singular Values")
+ ylabel!("Variance Explained")
+
+
+```
+Given that the first two singular values explain more than 95% variance in the data, they are considered enough for modeling our dataset. The next step here is to first plot the scores (i.e. the left singular matrix) of first and second singular values against each other to see whether we have a model or not. Each column in the *U* matrix represents a set of scores associated with a singular value (e.g. first column for the first singular value).
+
+```@example iris
+
+ scatter(U[:,1],U[:,2],label=false)
+ xlabel!("First Singular value (81%)")
+ ylabel!("Second Singular value (15%)")
+ 
+
+```
+At this point we are assuming that we do not have any idea about the plant species included in our dataset. Now we need to connect the singular values to individual variables. For that similarly to [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis) we will take advantage of the loadings, which in this case are the rows of the *V* or the columns of *``V^{T}``*. 
+
+```@example iris
+
+ bar([V[1,:],V[2,:]],label=false)
+ xlabel!("First Singular value (81%)")
+ ylabel!("Second Singular value (15%)")
+ 
 
 ```
 
