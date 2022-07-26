@@ -215,7 +215,7 @@ As you may have noticed, there are four variables in the original data and four 
 
 
 ```
-Given that the first two singular values explain more than 95% variance in the data, they are considered enough for modeling our dataset. The next step here is to first plot the scores (i.e. the left singular matrix) of first and second singular values against each other to see whether we have a model or not. Each column in the *U* matrix represents a set of scores associated with a singular value (e.g. first column for the first singular value).
+Given that the first two singular values explain more than 95% variance in the data, they are considered enough for modeling our dataset. The next step here is to first plot the scores (i.e. the left singular matrix) of first and second singular values against each other to see whether we have a model or not. Each column in the *``U``* matrix represents a set of scores associated with a singular value (e.g. first column for the first singular value).
 
 ```@example iris
 
@@ -225,17 +225,188 @@ Given that the first two singular values explain more than 95% variance in the d
  
 
 ```
-At this point we are assuming that we do not have any idea about the plant species included in our dataset. Now we need to connect the singular values to individual variables. For that similarly to [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis) we will take advantage of the loadings, which in this case are the rows of the *V* or the columns of *``V^{T}``*. 
+At this point we are assuming that we do not have any idea about the plant species included in our dataset. Now we need to connect the singular values to individual variables. For that similarly to [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis) we will take advantage of the loadings, which in this case are the columns of the *``V``* or the rows of *``V^{T}``*. 
 
 ```@example iris
 
- bar([V[1,:],V[2,:]],label=false)
- xlabel!("First Singular value (81%)")
- ylabel!("Second Singular value (15%)")
+ bar(V[:,1] ./ sum(abs.(V)),label="First SV")
+ bar!(V[:,2] ./ sum(abs.(V)),label="Second SV")
+ xlabel!("Variable Nr")
+ ylabel!("Importance")
+ #ylims!(-0.1,0.1)
+
  
 
 ```
+The sign of each loading value shows the relationship between the variable and the model. For example, based on the first *SV* the variable number one and two both have a negative impact on the final model (i.e. scores of the *SV1*). A positive impact indicates an increase of the final model scores with the variable while a negative impact means a decrease in the score values with an increase the variable. 
+
+```@example iris
+
+ p1 = scatter(X[:,1],U[:,1],label=false)
+ xlabel!("SepalLength")
+ ylabel!("Scores U1")
+
+  p2 = scatter(X[:,2],U[:,1],label=false)
+ xlabel!("SepalWidth")
+ ylabel!("Scores U1")
+
+  p3 = scatter(X[:,2],U[:,2],label=false)
+ xlabel!("SepalWidth")
+ ylabel!("Scores U2")
+
+ p4 = scatter(X[:,3],U[:,2],label=false)
+ xlabel!("PetalLength")
+ ylabel!("Scores U2")
+
+ plot(p1,p2,p3,p4,layout = (2,2))
+ 
+
+```
+In this particular case, the *SV1* is a linear combination of *SepalLength* and *SepalWidth* while the *SV2* is a linear combination of all four variables. This implies that we can cover the variance present in the ``X`` with two variables, which are ``U1`` and ``U2``. For this dataset, we have a reduction of variables from 4 to 2, which may not look impressive. However, this can be a very useful technique when dealing with a large number of variables (the octane example).
+
+### Clustering 
+
+When we perform cluster analysis or most modeling approaches, we need to divide our data into training and test sets. We usually go for a division of 80% for training set and 20% for the test. More details are provided in the cross-validation chapter. Let's randomly select 15 data points to put aside as the test set. 
+
+```@example iris
+
+n = 15 # number of points to be selected
+
+rand_ind = rand(1:size(X,1),n) # generate a set of random numbers between 1 and size(X,1)
+ind_tr = ones(size(X,1))       # generate a matrix of indices 
+ind_tr[rand_ind] .= 0          # set the test set values' indices to zero 
+X_tr = X[ind_tr .== 1,:]       # select the training set
+X_ts = X[rand_ind,:]           # select the test set
+data[rand_ind,:]
 
 
-### Clustering and trend analysis
+```
+Now that we have training and test sets separated, we can build our model using the training set. This implies that the model has never seen the values in the test set. It should be noted that we always want the homogenous distribution of measurements in the test set. Also, each iteration here will result in a different test set as a new set of random numbers are generated. 
+Now let's build our model with only the ``X_{tr}`` following the same procedure as before. 
 
+```@example iris
+
+ out = svd(X_tr)
+
+```
+
+```@example iris
+
+ D = diagm(out.S) # The singular value matrix
+
+```
+
+```@example iris
+
+ U = out.U # Left singular matrix
+
+```
+
+```@example iris
+
+ V = transpose(out.Vt) # Right singular matrix
+
+```
+Let's plot our results for the first two **SVs**, as we did before. However, this time we will take the knowledge of the different species into account. 
+
+```@example iris
+
+ var_exp = diag(D) ./ sum(D) # variance explained 
+ Y_tr = data[ind_tr .== 1,"Species"]
+ Y_ts = data[ind_tr .== 0,"Species"]
+ scatter(U[:,1],U[:,2],label=["Setosa" "Versicolor" "Virginica"], group = Y_tr)
+ xlabel!("First Singular value (81%)")
+ ylabel!("Second Singular value (14%)")
+
+
+```
+As it can be seen, this model is very similar to our previous model based on the full dataset. Now we need to first define thresholds for each class based on the score values in the ``U1`` and ``U2`` space. This is typically more difficult to assess. However, for this case the main separating factor is the ``U2`` values (e.g. ``U2 \geq 0.05 = Setosa``). 
+
+
+```@example iris
+
+ scatter(U[:,1],U[:,2],label=["Setosa" "Versicolor" "Virginica"], group = Y_tr)
+ plot!([-0.15,0],[0.05,0.05],label="Setosa")
+ plot!([-0.15,0],[-0.04,-0.04],label="Virginica")
+ xlabel!("First Singular value (81%)")
+ ylabel!("Second Singular value (14%)")
+
+
+```
+
+The next step is to calculate the score values for the measurements in the test set. This will enable us to estimate the class associated with each data point in the test set. To do this we need to do a little bit of linear algebra.
+
+```math
+X = UDV^{T}\\
+
+U_{test} = X \times (DV^{T})^{-1}
+
+```
+In practice:
+
+```@example iris
+
+ U_test = X_ts * pinv(D*transpose(V))
+
+
+```
+```@example iris
+
+ scatter(U[:,1],U[:,2],label=["Setosa" "Versicolor" "Virginica"], group = Y_tr)
+ plot!([-0.15,0],[0.05,0.05],label="Setosa")
+ plot!([-0.15,0],[-0.04,-0.04],label="Virginica")
+ scatter!(U_test[Y_ts .== "setosa" ,1],U_test[Y_ts .== "setosa",2],label="Setosa",marker=:d)
+ scatter!(U_test[Y_ts .== "versicolor",1],U_test[Y_ts .== "versicolor",2],label="Versicolor",marker=:d)
+ scatter!(U_test[Y_ts .== "virginica",1],U_test[Y_ts .== "virginica",2],label="Virginica",marker=:d)
+ xlabel!("First Singular value (81%)")
+ ylabel!("Second Singular value (14%)")
+
+
+```
+
+As it can be seen from the results of the test set, our model is not prefect but it does well for most cases. It should be noted that steps such as data pre-treatment and the use of supervised methods may improve the results of of your cluster analysis. The use of **SVD** for prediction is not recommended. It must be mainly used for the dimension reduction and data exploration.  
+
+### Regression
+
+If you have a dataset (e.g. octane dataset in the additional example), where the **SVD** is used to reduce the dimensions of the dataset. In this case the we can perform a least square regression using the selected columns of ``U`` rather than the original ``X``. For example in case of *iris* dataset the ``U1`` and ``U2`` can be used to replace ``X``.  
+
+```julia 
+ X_svr = U[:,1:m] # m is the number of selected SVs 
+ Y_svr            # does not exist for iris dataset. for the octane dataset is the octane column
+ b = pinv(transpose(X_svr) * X_svr) * transpose(X_svr) * Y_svr # simple least square solution
+ y_hat = X_svr * b # prediction the y_hat 
+```
+
+### Trend analysis
+
+We also can assess the trend represented by each *SV* in our model. This is typically done by setting all *SV* values except one to zero. Then the new ``D`` is used to predict ``\hat{X}``. Then different variables are plotted against each other for both ``X`` matrices. 
+
+```@example iris
+ D_temp = out.S
+ D_temp[2:end] .= 0
+ D_n = diagm(D_temp) # the new singular value matrix
+
+```
+Then the ``\hat{X}`` is calculated.
+
+```@example iris
+ X_h  = U * D_n * transpose(V)
+ X_h[1:5,:]
+
+```
+Now if we plot the SepalLength vs SepalWidth we can clearly see a clear 1 to 2 relationship between the two variables which is being detected by the first *SV*. This can be done for other variables and *SVs*. 
+```@example iris
+
+ scatter(X[:,1],X[:,2],label="X")
+ scatter!(X_h[:,1],X_h[:,2],label="X_h")
+ xlabel!("SepalLength")
+ ylabel!("SepalWidth")
+
+
+```
+
+## Additional example
+
+If you are interested in practicing more, you can use the NIR.csv file provided in the folder dataset of the package *ACS.jl* github repository. Please note that this is an *SVR* problem, where you can first use **SVD** for the dimension reduction and then use the selected *SVs* for the regression. 
+
+If you are interested in math behind **SVD** and would like to know more you can check this [MIT course material](https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/resources/lecture-6-singular-value-decomposition-svd/).  
