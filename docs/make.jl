@@ -13,7 +13,8 @@ makedocs(
         "Home" => "index.md",
         "Preparation" => "prep.md",
         "SVD" => "svd.md",
-        "HCA" => "HCA.md"
+        "HCA" => "HCA.md",
+        "k-means" => "KMeans.md"
     ]
 )
 

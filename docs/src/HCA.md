@@ -81,7 +81,7 @@ In the next step we need to find the points in the *X* that have the smallest di
 using ACS
 
 #dist = dist_calc(X) 
-dist[ACS.diagind(dist)] .= Inf                   # Set the diagonal to inf, which is very helpful when searching for minimum distance
+dist[diagind(dist)] .= Inf                   # Set the diagonal to inf, which is very helpful when searching for minimum distance
 dist
 
 ```
@@ -169,7 +169,7 @@ end
 data = hcat(X,Y)								# To generate the DATA matrix
 
 dist = dist_calc(data) 							# Calculating the distance matrix
-dist[ACS.diagind(dist)] .= Inf                   # Set the diagonal to inf, which is very helpful when searching for minimum distance
+dist[diagind(dist)] .= Inf                   # Set the diagonal to inf, which is very helpful when searching for minimum distance
 dist
 
 ```
@@ -208,22 +208,53 @@ using ACS
 dist = dist_calc(data) 
 
 hc = hclust(dist, linkage=:average)
-#ACS.sp.plot(1:10)
+sp.plot(hc)
 
 ```
 
+## Practical Application
 
-## Practical example 
+We can use either our home developed function for HCA or use the julia built-in functions. Here we will provide an easy tutorial on how to use the julia functions that are built-in the **ACS.jl** package. 
 
-Let's look at the iris dataset and perform HCA 
+For calculating the distances the function *pairwise(-)* via the julia package [**Distances.jl**](https://github.com/JuliaStats/Distances.jl) can be used. Function *pairwise(-)* has three inputs namely: 1) distance metrics, 2) data, and 3) the operation direction. This function outputs a square matrix similar to our distance matrix. As it can be seen from the distance matrix, our function and the *pairwise(-)* generate the same results, which is expected. The function *pairwise(-)* will give access to a wide variety of distance metrics that can be used for your projects. 
 
+```@example hcax
+using ACS
 
-## Applications 
+dist1 = pairwise(ACS.Euclidean(), data, dims=1) # Euclidean distance 
 
+# dist1 = pairwise(ACS.TotalVariation(), data, dims=1) # TotalVariation distance 
 
+```
+
+For the HCA itself, you can use the function *hclust(-)* incorporated in the **ACS.jl** package and provided via [**Clustering.jl**](https://juliastats.org/Clustering.jl/stable/index.html) package. This function takes two inputs, the distance matrix and the linkage method. The output of this function is a structure with four [outputs](https://juliastats.org/Clustering.jl/stable/hclust.html#Clustering.Hclust). The two most important outputs are *merges* and *order*. The combination of all four outputs can be plotted via *sp.plot(-)* function. 
+
+```@example hcax
+using ACS
+
+h = hclust(dist1,:average) # Average linkage or centroids 
+
+```
+To access the outputs, one can do the following: 
+```@example hcax
+using ACS
+
+h.order 
+
+```
+and to plot the outputs, we can use the below function.
+
+```@example hcax
+using ACS
+
+sp.plot(h)
+
+```
+
+There are also *python* implementation of [HCA](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html), that you can explore using those for your analysis. 
 
 ## Additional example
 
-If you are interested in practicing more, you can use the [NIR.csv](https://github.com/EMCMS/ACS.jl/blob/main/datasets/NIR.csv) file provided in the [folder dataset](https://github.com/EMCMS/ACS.jl/tree/main/datasets) of the package [*ACS.jl* github repository](https://github.com/EMCMS/ACS.jl). Please note that this is an *SVR* problem, where you can first use **SVD** for the dimension reduction and then use the selected *SVs* for the regression. 
+If you are interested in practicing more, you can use the [mtcars](https://github.com/JuliaStats/RDatasets.jl/blob/master/doc/datasets/rst/mtcars.rst) dataset via **RDatasets** provided in [folder dataset](https://github.com/EMCMS/ACS.jl/tree/main/datasets) of the package [*ACS.jl* github repository](https://github.com/EMCMS/ACS.jl). Please note that you must exclude the car origin column. The objective here is to see whether HCA is able to cluster the cars with similar origins.  
 
-If you are interested in math behind **SVD** and would like to know more you can check this [MIT course material](https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/resources/lecture-6-singular-value-decomposition-svd/).  
+If you are interested in additional resources regarding **HCA** and would like to know more you can check this [MIT course material](https://ocw.mit.edu/courses/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/resources/lecture-12-clustering/).  
