@@ -12,7 +12,8 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "Preparation" => "prep.md",
-        "SVD" => "svd.md"
+        "SVD" => "svd.md",
+        "HCA" => "HCA.md"
     ]
 )
 
@@ -22,3 +23,5 @@ deploydocs(
     branch = "gh-pages",
     #push_preview = true,
 )
+
+# include("/Users/saersamanipour/Desktop/dev/pkgs/ACS/docs/make.jl") 

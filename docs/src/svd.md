@@ -6,7 +6,7 @@ The [**SVD**](https://en.wikipedia.org/wiki/Singular_value_decomposition) is a m
 
 ## How? 
 
-In **SVD** the matrix *X_{m \times n}* is decomposed into the matrices *``U_{m \times n}*, *D_{n \times n}``*, and *``V_{n \times n}^{T}``*. The matrix *``U_{m \times n}``* is the left singular matrix and it represents a rotation in the matrix space. The *``D_{n \times n}``* is diagonal matrix and contains the singular values. This matrix may be indicated with different symbols such as *``\Sigma_{n \times n}``*. The *``D_{n \times n}``* matrix in the geometrical space represents an act of stretching. Each *singular value* is the degree and/or weight of stretching. We use the notation *``D_{n \times n}``* to remind ourselves that this is a diagonal matrix. Finally, *``V_{n \times n}^{T}``* is called the right singular matrix and is associated with rotation. Overall, **SVD** geometrically is a combination of a rotation, a stretching, and a second rotation.
+In **SVD** the matrix *X_{m \times n}* is decomposed into the matrices *``U_{m \times n}``*, *``D_{n \times n}``*, and *``V_{n \times n}^{T}``*. The matrix *``U_{m \times n}``* is the left singular matrix and it represents a rotation in the matrix space. The *``D_{n \times n}``* is diagonal matrix and contains the singular values. This matrix may be indicated with different symbols such as *``\Sigma_{n \times n}``*. The *``D_{n \times n}``* matrix in the geometrical space represents an act of stretching. Each *singular value* is the degree and/or weight of stretching. We use the notation *``D_{n \times n}``* to remind ourselves that this is a diagonal matrix. Finally, *``V_{n \times n}^{T}``* is called the right singular matrix and is associated with rotation. Overall, **SVD** geometrically is a combination of a rotation, a stretching, and a second rotation.
 
 The two matrices *``U_{m \times n}``* and *``V_{n \times n}^{T}``* are very special due to their [unitary](https://en.wikipedia.org/wiki/Unitary_matrix) properties.
 
@@ -355,16 +355,16 @@ In practice:
  scatter(U[:,1],U[:,2],label=["Setosa" "Versicolor" "Virginica"], group = Y_tr)
  plot!([-0.15,0],[0.05,0.05],label="Setosa")
  plot!([-0.15,0],[-0.04,-0.04],label="Virginica")
- scatter!(U_test[Y_ts .== "setosa" ,1],U_test[Y_ts .== "setosa",2],label="Setosa",marker=:d)
- scatter!(U_test[Y_ts .== "versicolor",1],U_test[Y_ts .== "versicolor",2],label="Versicolor",marker=:d)
- scatter!(U_test[Y_ts .== "virginica",1],U_test[Y_ts .== "virginica",2],label="Virginica",marker=:d)
+ scatter!(U_test[Y_ts[:] .== "setosa" ,1],U_test[Y_ts[:] .== "setosa",2],label="Setosa",marker=:d)
+ scatter!(U_test[Y_ts[:] .== "versicolor",1],U_test[Y_ts[:] .== "versicolor",2],label="Versicolor",marker=:d)
+ scatter!(U_test[Y_ts[:] .== "virginica",1],U_test[Y_ts[:] .== "virginica",2],label="Virginica",marker=:d)
  xlabel!("First Singular value (81%)")
  ylabel!("Second Singular value (14%)")
 
 
 ```
 
-As it can be seen from the results of the test set, our model is not prefect but it does well for most cases. It should be noted that steps such as data pre-treatment and the use of supervised methods may improve the results of of your cluster analysis. The use of **SVD** for prediction is not recommended. It must be mainly used for the dimension reduction and data exploration.  
+As it can be seen from the results of the test set, our model is not prefect but it does well for most cases. It should be noted that steps such as data pre-treatment and the use of supervised methods may improve the results of your cluster analysis. The use of **SVD** for prediction is not recommended. It must be mainly used for the dimension reduction and data exploration.  
 
 ### Regression
 
@@ -407,6 +407,6 @@ Now if we plot the SepalLength vs SepalWidth we can clearly see a clear 1 to 2 r
 
 ## Additional example
 
-If you are interested in practicing more, you can use the NIR.csv file provided in the folder dataset of the package *ACS.jl* github repository. Please note that this is an *SVR* problem, where you can first use **SVD** for the dimension reduction and then use the selected *SVs* for the regression. 
+If you are interested in practicing more, you can use the [NIR.csv](https://github.com/EMCMS/ACS.jl/blob/main/datasets/NIR.csv) file provided in the [folder dataset](https://github.com/EMCMS/ACS.jl/tree/main/datasets) of the package [*ACS.jl* github repository](https://github.com/EMCMS/ACS.jl). Please note that this is an *SVR* problem, where you can first use **SVD** for the dimension reduction and then use the selected *SVs* for the regression. 
 
 If you are interested in math behind **SVD** and would like to know more you can check this [MIT course material](https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/resources/lecture-6-singular-value-decomposition-svd/).  

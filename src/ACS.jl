@@ -14,7 +14,7 @@ using ScikitLearnBase
 using ScikitLearn 
 using ScikitLearn.Skcore: @sk_import
 using Clustering
-#import StatPlots as sp 
+import StatPlots as sp
 using Conda
 using Distributions
 using Distances 
@@ -23,7 +23,7 @@ using HDF5
 using JLD
 
 export dataset, plot, plot!, scatter, scatter!, xlabel!, ylabel!, title!, @sk_import, eigvals, eigvecs, transpose, svd, diagm,
-pinv, diag, xlims!, ylims!, describe, mean, median, bar, bar! 
+pinv, diag, xlims!, ylims!, describe, mean, median, bar, bar!, diagind, hclust, sp, pairwise  
 # Write your package code here.
 
 
