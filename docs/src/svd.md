@@ -55,7 +55,7 @@ U = XVD^{-1}
 ```
 Please note that ``D^{-1}`` denotes the [inverse or pseudo-inverse](https://en.wikipedia.org/wiki/Invertible_matrix) of the matrix *D*.  
 
-## Practical example 
+## Practical Example 
 
 Let's do the **SVD** calculations together for the below matrix: 
 
@@ -76,7 +76,7 @@ XtX = transpose(X)*X
 
 ```
 
-### Step 2: calculation of *D*, *V*, and *U*
+### Step 2: Calculation of *D*, *V*, and *U*
 
 ```@example svdex
 
@@ -98,7 +98,7 @@ U = X*V*pinv(D)	# Left singular matrix
 
 ```
 
-#### Builtin function
+#### Builtin Function
 
 The same calculations can be done with the function *svd(-)* of ACS package provided via LinearAlgebra.jl package. 
 
@@ -128,7 +128,7 @@ The same calculations can be done with the function *svd(-)* of ACS package prov
 
 Please note that the builtin function sorts the singular values in descending order and consequently the other two matrices are also sorted following the same. Additionally, for ease of calculations the builtin function generates the mirror image of the *U* and *V* matrices. These differences essentially do not impact your calculations at all, as long as they are limited to what is listed above.
 
-### Step 3 calculation of ``\hat{X}``
+### Step 3 Calculation of ``\hat{X}``
 
 Using both the manual method and the builtin function, you can calculate ``\hat{X}`` following the below operation. 
 
@@ -141,7 +141,7 @@ X_hat = U*D*transpose(V)
 
 As mentioned above **SVD** has several applications in different fields. Here we will focus on three, namely: dimension reduction, clustering/trend analysis, and multivariate regression. This dataset contains five variables (i.e. columns) and 150 measurements (i.e. rows). The last variable "Species" is a categorical variable which defines the flower species. 
 
-### Dimension reduction
+### Dimension Reduction
 
 To show case the power of **SVD** in dimension reduction we will use the *Iris* dataset from [Rdatasets](https://github.com/JuliaStats/RDatasets.jl). 
 
@@ -377,7 +377,7 @@ If you have a dataset (e.g. octane dataset in the additional example), where the
  y_hat = X_svr * b # prediction the y_hat 
 ```
 
-### Trend analysis
+### Trend Analysis
 
 We also can assess the trend represented by each *SV* in our model. This is typically done by setting all *SV* values except one to zero. Then the new ``D`` is used to predict ``\hat{X}``. Then different variables are plotted against each other for both ``X`` matrices. 
 
@@ -405,7 +405,7 @@ Now if we plot the SepalLength vs SepalWidth we can clearly see a clear 1 to 2 r
 
 ```
 
-## Additional example
+## Additional Example
 
 If you are interested in practicing more, you can use the [NIR.csv](https://github.com/EMCMS/ACS.jl/blob/main/datasets/NIR.csv) file provided in the [folder dataset](https://github.com/EMCMS/ACS.jl/tree/main/datasets) of the package [*ACS.jl* github repository](https://github.com/EMCMS/ACS.jl). Please note that this is an *SVR* problem, where you can first use **SVD** for the dimension reduction and then use the selected *SVs* for the regression. 
 

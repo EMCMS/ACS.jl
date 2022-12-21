@@ -253,7 +253,7 @@ sp.plot(h)
 
 There are also *python* implementation of [HCA](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html), that you can explore using those for your analysis. 
 
-## Additional example
+## Additional Example
 
 If you are interested in practicing more, you can use the [mtcars](https://github.com/JuliaStats/RDatasets.jl/blob/master/doc/datasets/rst/mtcars.rst) dataset via **RDatasets** provided in [folder dataset](https://github.com/EMCMS/ACS.jl/tree/main/datasets) of the package [*ACS.jl* github repository](https://github.com/EMCMS/ACS.jl). Please note that you must exclude the car origin column. The objective here is to see whether HCA is able to cluster the cars with similar origins.  
 

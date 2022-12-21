@@ -6,7 +6,7 @@ using Documenter, ACS
 makedocs(
     modules = [Documenter, ACS],
     build = "build",
-    format = Documenter.HTML(),
+    format = Documenter.HTML(assets=["assets/init.js"]),
     clean = true,
     sitename = "ACS.jl",
     pages = [
@@ -14,7 +14,8 @@ makedocs(
         "Preparation" => "prep.md",
         "SVD" => "svd.md",
         "HCA" => "HCA.md",
-        "k-means" => "KMeans.md"
+        "k-means" => "KMeans.md",
+        "Baysian Statistics" => "Bayes.md"
     ]
 )
 

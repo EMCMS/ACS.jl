@@ -16,7 +16,7 @@ d_{d,c_{n}} = \sqrt{\sum _{i=1}^{l} (x_{m} - x_{c_n})^2}
 After assigning the data points to the first set of temporary clusters, the **k-means** algorithm adjusts the centroids by putting them in the center of clusters, only considering the actual data. At this stage the process of distance calculation is repeated again and the points may be reassigned to another cluster based on their distances. This process is repeated until either the location of centroids remain constant or there is no reassignment of the points. These are typical stopping signals for the **k-means** algorithm. 
  
 
-## Practical example 
+## Practical Example 
 
 Let's build a simple **k-means** algorithm together using some random data: 
 
@@ -40,7 +40,7 @@ ylabel!("Y")
 
 ```
 
-### Step 1: selection of centroids
+### Step 1: Selection of centroids
 
 For this case we have only two variables in our dataset *data_s*. For simplicity, we will start with two clusters, thus *k* is equal 2. In this case, we can either select two random points within the measurements' window (i.e. between minimum and maximum of values in *data_s*) or we can choose the indices of two of the measurements at random. Here we go with the second option.  
 
@@ -60,7 +60,7 @@ ylabel!("Y")
 
 ```
 
-### Step 2: calculation of distances
+### Step 2: Calculation of distances
 
 To calculate the distances, we create a vector containing the distance of each centroid from every single point in the *data_s*. This will result in a distance matrix of ``d_{10 \times 2}``, where column one belongs to the first centroid and the first point corresponds to the first data point in *data_s*. Since we are using the actual measurements as our starting point, we will have zero distances for at least one point per column.
 
@@ -78,7 +78,7 @@ d
 
 ```
 
-### Step 3 assigning the points to each cluster
+### Step 3 Assigning the points to each cluster
 
 Now that we have our distance matrix *d*, we need to assign each point to a cluster, in our case the two clusters. To do so, we can look at our *d* matrix row wise and based on the column with the minimum distance assign that point to a cluster. For example, if in *d[1,:]* the minimum value is located at *d[1,2]*, then this point belongs to the cluster number two. These calculations can be done using the following code. 
 
@@ -105,7 +105,7 @@ ylabel!("Y")
 
 ```
 
-### Step 4 adjusting the centroids 
+### Step 4 Adjusting the centroids 
 
 Now that we have the first set of temporary clusters, we need to recalculate the centroids using the the data points that are assigned to a specific cluster. To do that we calculate the mean of *data_s* column wise where the values in the *clusters* matrix is different from zero. 
 
@@ -201,7 +201,7 @@ ylabel!("Y")
 ```
 
 
-## Additional example
+## Additional Example
 
 If you are interested in practicing more, you can use the [NIR.csv](https://github.com/EMCMS/ACS.jl/blob/main/datasets/NIR.csv) file provided in the [folder dataset](https://github.com/EMCMS/ACS.jl/tree/main/datasets) of the package [*ACS.jl* github repository](https://github.com/EMCMS/ACS.jl). You can try to use the NIR spectra and **k-means** to see whether there are clear clusters of samples associated with different octane number. 
 

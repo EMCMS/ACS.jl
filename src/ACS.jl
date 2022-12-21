@@ -23,7 +23,8 @@ using HDF5
 using JLD
 
 export dataset, plot, plot!, scatter, scatter!, xlabel!, ylabel!, title!, @sk_import, eigvals, eigvecs, transpose, svd, diagm,
-pinv, diag, xlims!, ylims!, describe, mean, median, bar, bar!, diagind, hclust, sp, pairwise, kmeans, assignments 
+pinv, diag, xlims!, ylims!, describe, mean, median, bar, bar!, diagind, hclust, sp, pairwise, kmeans, assignments, annotate!, histogram,
+histogram!, Normal, Gamma, fit_mle 
 # Write your package code here.
 
 
