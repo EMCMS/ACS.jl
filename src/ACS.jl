@@ -24,7 +24,7 @@ using JLD
 
 export dataset, plot, plot!, scatter, scatter!, xlabel!, ylabel!, title!, @sk_import, eigvals, eigvecs, transpose, svd, diagm,
 pinv, diag, xlims!, ylims!, describe, mean, median, bar, bar!, diagind, hclust, sp, pairwise, kmeans, assignments, annotate!, histogram,
-histogram!, Normal, Gamma, fit_mle 
+histogram!, Normal, Gamma, fit_mle, std, pdf, cdf 
 # Write your package code here.
 
 
