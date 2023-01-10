@@ -159,8 +159,8 @@ If we overlay the two concentration distributions assuming [Normality](https://e
 using ACS 
 
 histogram(x,bins=5,normalize=:probability,label=false)
-plot!(Normal(9.5,0.7*ACS.std(x)),label="Toxic")
-plot!(Normal(2.5,ACS.std(x)),label="No effect",c=:black)
+plot!(Normal(9.5,0.7*std(x)),label="Toxic")
+plot!(Normal(2.5,std(x)),label="No effect",c=:black)
 
 xlabel!("Concentration (ppb)")
 ylabel!("Probability")
@@ -173,9 +173,9 @@ Now you are given a new sample to measure for the concentration of the drug. You
 using ACS 
 
 histogram(x,bins=5,normalize=:probability,label=false)
-plot!(Normal(9.5,0.7*ACS.std(x)),label="Toxic")
-plot!(Normal(2.5,ACS.std(x)),label="No effect",c=:black)
-plot!([8.5,8.5],[0,0.4],label="Measurment",c=:blue)
+plot!(Normal(9.5,0.7*std(x)),label="Toxic")
+plot!(Normal(2.5,std(x)),label="No effect",c=:black)
+plot!([8.5,8.5],[0,0.4],label="Measurement",c=:blue)
 
 xlabel!("Concentration (ppb)")
 ylabel!("Probability")
@@ -188,8 +188,8 @@ When looking at your results, you intuitively will decide that this is a case of
 using ACS 
 
 histogram(x,bins=5,normalize=:probability,label=false)
-plot!(Normal(9.5,0.7*ACS.std(x)),label="Toxic",c=:red)
-plot!(Normal(2.5,ACS.std(x)),label="No effect",c=:black)
+plot!(Normal(9.5,0.7*std(x)),label="Toxic",c=:red)
+plot!(Normal(2.5,std(x)),label="No effect",c=:black)
 plot!([8.5,8.5],[0,0.4],label="Measurement",c=:blue)
 
 plot!([8.5,9.5],[0.1675,0.1675],label="d1",c=:red)
@@ -206,8 +206,8 @@ Performing such assessments visually is only possible when we are dealing with v
 ```@example bayes
 using ACS 
 
-PT = ACS.pdf(Normal(9.5,0.7*ACS.std(x)),8.5)
-PnE = ACS.pdf(Normal(2.5,ACS.std(x)),8.5)
+PT = pdf(Normal(9.5,0.7*std(x)),8.5)
+PnE = pdf(Normal(2.5,std(x)),8.5)
 P = [PT,PnE]
 
 ```
@@ -217,8 +217,8 @@ P = [PT,PnE]
 using ACS 
 
 histogram(x,bins=5,normalize=:probability,label=false)
-plot!(Normal(9.5,0.7*ACS.std(x)),label="Toxic")
-plot!(Normal(2.5,ACS.std(x)),label="No effect",c=:black)
+plot!(Normal(9.5,0.7*std(x)),label="Toxic")
+plot!(Normal(2.5,std(x)),label="No effect",c=:black)
 plot!([8.5,8.5],[0,0.4],label="Measurment",c=:blue)
 annotate!(6.5,0.28,string(round(PnE,digits=2)))
 annotate!(10,0.28,string(round(PT,digits=2)))
@@ -244,7 +244,7 @@ Let's assume that the figure above is related to the several measurements of the
 using ACS 
 
 histogram(x,bins=5,normalize=:probability,label=false)
-plot!(Normal(ACS.mean(x),ACS.std(x)),label="Distribution assuming normality")
+plot!(Normal(mean(x),std(x)),label="Distribution assuming normality")
 
 xlabel!("Concentration (ppb)")
 ylabel!("Probability")
@@ -261,8 +261,8 @@ function r_sample(x,n,prc)
 
     for i =1:n 
         tv1 = rand(x,Int(round(prc*length(x))))
-        m[i] = ACS.mean(tv1)
-        st[i] = ACS.std(tv1)
+        m[i] = mean(tv1)
+        st[i] = std(tv1)
 
     end 
 
@@ -336,11 +336,11 @@ function uncertainty_estimate(x,pri)
 
     for i =1:length(target)
 
-        dist = Normal(target[i],ACS.std(x))                               # Distribution of the assumed mean
-        tv = 1                                                            # Initialize the likelihood values
+        dist = Normal(target[i],std(x))                                 # Distribution of the assumed mean
+        tv = 1                                                          # Initialize the likelihood values
         for j = 1:length(x)
 
-            tv = tv * ACS.pdf(dist,x[j]) * ACS.pdf(pri,x[j])               # Updating the likelihood over each iteration
+            tv = tv * pdf(dist,x[j]) * pdf(pri,x[j])                    # Updating the likelihood over each iteration
 
         end
 
@@ -365,9 +365,9 @@ using ACS
 
 histogram(x,bins=5,label="Data",normalize=:probability)
 plot!(fit_mle(Gamma,x),label="Prior distribution")
-plot!(Normal(10.5,ACS.std(x)),label="Potential distribution I")
-plot!(Normal(8.5,ACS.std(x)),label="Potential distribution II")
-plot!(Normal(3.5,ACS.std(x)),label="Potential distribution III")
+plot!(Normal(10.5,std(x)),label="Potential distribution I")
+plot!(Normal(8.5,std(x)),label="Potential distribution II")
+plot!(Normal(3.5,std(x)),label="Potential distribution III")
 #plot!(fit_mle(Normal, m),label="Model")
 xlabel!("Concentration (ppb)")
 ylabel!("Probability")
