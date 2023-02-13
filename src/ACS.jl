@@ -22,9 +22,11 @@ using StatsBase
 using HDF5
 using JLD
 
+include("ACS_Extra_Fun.jl")
+
 export dataset, plot, plot!, scatter, scatter!, xlabel!, ylabel!, title!, @sk_import, eigvals, eigvecs, transpose, svd, diagm,
 pinv, diag, xlims!, ylims!, describe, mean, median, bar, bar!, diagind, hclust, sp, pairwise, kmeans, assignments, annotate!, histogram,
-histogram!, Normal, Gamma, fit_mle, std, pdf, cdf 
+histogram!, Normal, Gamma, fit_mle, std, pdf, cdf, read_ACS_data 
 # Write your package code here.
 
 
