@@ -16,7 +16,7 @@ makedocs(
         "HCA" => "HCA.md",
         "k-means" => "KMeans.md",
         "Decision trees" => "DT_RF.md",
-        "Baysian Statistics" => "Bayes.md"
+        "Bayesian Statistics" => "Bayes.md"
     ]
 )
 

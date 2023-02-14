@@ -14,389 +14,250 @@ RSS = \sum ^{n}_{i=1} (y_{i} - f(x_{i}))^2
 
 ```
 
-The term *``P(A \mid B)``* is the posterior probability of *A* given *B*, implying that *A* and *B* are true given that *B* is true. The second term in this formula is the conditional probability of *``P(B \mid A)``*. The term *P(A)* is defined as the *prior probability*, which enables the incorporation of prior knowledge into the probability distribution of even occurring. Finally, *P(B)* is the marginal probability, which is used as a normalizing factor in this equation and it must be > 0. To put these terms into context, let's look at the following example. 
-
-There is a new test for the detection of a new variant of COVID-19. We want to calculate the probability of a person being actually sick given a positive test (i.e. the posterior probability *``P(A \mid B)``*). The conditional probability (*``P(B \mid A)``*) in this case is the rate of true positive for the test. In other words the percentage of sick people who tested positive. The prior probability (*P(A)*) in this case is the probability of people getting sick while the marginal probability (*P(B)*) is all people who test positive independently from their health status.   
-
-### Bayes Formula
-
-The derivation of **Bayes Theorem** is very simple and can be done with simple knowledge of probability and arithmetics. Let's first write the two conditional probabilities (i.e. the posterior and conditional probabilities) as functions of their [joint probabilities](https://en.wikipedia.org/wiki/Joint_probability_distribution). 
-
-```math 
-
-P(A \mid B) = \frac{P(A \cap B)}{P(B)} \\
-P(B \mid A) = \frac{P(B \cap A)}{P(A)}
-
-```
-Given that ``P(A \cap B) = P(B \cap A)`` and is is unknown, one can solve the above equations as a function of this unknown joint probability. 
-
-```math 
-
-P(A \cap B) = P(A \mid B)P(B) \\
-P(A \cap B) = P(B \mid A)P(A)
-
-```
-
-This means that the right sides of these equations can be assumed equal as the left sides are equal, thus: 
-
-```math 
-
-P(A \mid B)P(B) = P(B \mid A)P(A).
-
-```
-Now if we divide both sides of this equation by *P(B)*, we will end up with the **Bayes Theorem**.
-
-```math 
-
-P(A \mid B) = \frac{P(B \mid A)P(A)}{P(B)}.
-
-```
+In this equation ``f(x_{i})`` represents the mean of the data points are grouped together while the ``y_{i}`` is the each individual measurement. By calculating the *RSS* we are evaluating whether the mean of grouped data points is a good enough estimation of the data. Once one set of data points are grouped, then we use their mean (average) to represent them. This process is repeated for all the variables and data points until every measurement is a relatively pure leaf. A pure leaf is a leaf where the mean of the grouped data points is an accurate estimation of most data points. Let's see how this works. 
 
 ## Practical Example
 
-This is a very simple example where we work together to calculate the joint probabilities which are needed for the conditional probability calculations. 
+### Univariate Case
 
-We have a classroom with 40 students. We asked them to fill out a survey about whether they like football, rugby, or none of them. The results of our survey show that 30 students like football, 10 students like rugby, and 5 do not like these sports. As you can see, the total number of votes is larger than 40, implying that 5 students like both sports.  
+To start we will use a two dimensional data set, where we would like to predict the relative intensity of our signal based on the injected mass of the calibrant into our mass spectrometer. 
 
-```@example bayes
+```@example DT
 using ACS
 
-plot([1,1],[1,6],label=false,color = :blue)
-plot!([1,9],[1,1],label=false,color =:blue)
-plot!([9,9],[1,6],label=false,color =:blue)
-plot!([1,9],[6,6],label="All students",color =:blue)
-plot!([3,3],[1,6],label=false,color =:red)
-plot!([1,3],[3.5,3.5],label=false,color =:green)
-plot!([3,5],[3.5,3.5],label=false,color =:orange)
-plot!([5,5],[3.5,6],label=false,color =:orange)
-annotate!(2,5,"Rugby Only")
-annotate!(4,5,"Both")
-annotate!(2,2,"None")
-annotate!(6,2,"Football Only")
+file_name = "Rel_res.csv"               # This file is available at: https://github.com/EMCMS/ACS.jl/tree/main/datasets
 
-```
+data = read_ACS_data(file_name)         # Importing the data using an ACS function
 
-Now lets generate the associated [contingency table](https://en.wikipedia.org/wiki/Contingency_table) based on the survey results. Our table is a two by two one, given the number of questions asked. The contingency table will help us to calculate the joint probabilities. The structure of our table will be the following:
-
-|    | Y Football | N Football|
-|:--- | :---: | ---: |
-|Y Rugby |    |      |
-|N Rugby |    |      |
-
-After filling the table with the correct frequencies, we will end up with the following: 
-
-|    | Y Football | N Football|
-|:--- | :---: | ---: |
-|Y Rugby |  5  |   5   |
-|N Rugby |  25  |   5   |
-
-These numbers can also be expressed in terms of probabilities rather than frequencies. 
-
-|    | Y Football | N Football|
-|:--- | :---: | ---: |
-|Y Rugby |  5/40 = 0.125  |   5/40 = 0.125   |
-|N Rugby |  25/40 = 0.625  |   5/40 = 0.125   |
-
-We can now further expand our table to include total cases of football and rugby fans amongst the students. 
-
-|    | Y Football | N Football| Rugby total|
-|:--- | :---: | :---: | ---: |
-|Y Rugby |  5/40 = 0.125  |   5/40 = 0.125   | 10/40 = 0.25 |
-|N Rugby |  25/40 = 0.625  |   5/40 = 0.125   | 30/40 = 0.75 |
-Football total | 30/40 = 0.75 | 10/40 = 0.25 | |
-
-
-We can use the same table for calculating conditional probabilities, for example *``P(A \mid B)``* or expanded to *``P(A \& B \mid B)``*. Let's remind ourselves the formula for this: 
-
-```math 
-
-P(A \mid B) = \frac{P(A \cap B)}{P(B)}.
-
-```
-For this example we want to calculate the probability of a student liking football given that they are carrying a rugby ball (i.e. they like rugby). So now we can write the above formula using the annotation related to this question. 
-
-```math 
-
-P(Football \& Rugby \mid Rugby) = \frac{P(Football \cap Rugby)}{P(Total Rugby)}.
-
-```
-
-Now we can plug in the numbers from our contingency table to calculate the needed probability. 
-
-```math 
-
-P(Football \& Rugby \mid Rugby) = \frac{0.125}{0.25} = 0.5
-
-```
-
-Another way to express these probabilities is using the [probability trees](https://www.mathsisfun.com/data/probability-tree-diagrams.html). Each branch in a tree represents one set of conditional probabilities.   
-
-
-## Applications
-
-**Bayesian Statistics** has several applications from [uncertainty assessment](https://en.wikipedia.org/wiki/Monte_Carlo_method) to [network analysis](https://en.wikipedia.org/wiki/Bayesian_network) as well as simple regression and classification. Here we will discuss  classification (i.e. [Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_classifier)), uncertainty assessment, and regression. 
-
-### Naive Bayes
-
-Imagine you are measuring the concentration of a certain pharmaceutical in the urine samples of a clinical trial. This drug at low concentrations (i.e. < 5 ppb) does not have an effect while at high levels (i.e. > 9) could be lethal. Your previous measurements of these concentrations results in the below distribution.   
-
-```@example bayes
-using ACS 
-
-x = [2.11170571,4.654611177,2.058684377,9.118890998,6.482271164,1.741767743,0.423550831,3.930361297
-,8.394899978,2.720184918,4.642679068,0.698396604,10.60195845,9.949609087,9.788688087,9.275078609
-,3.71104968,3.048191598,7.131314198,2.696493503]
-
-histogram(x,bins=5,normalize=:probability,label=false)
-xlabel!("Concentration (ppb)")
-ylabel!("Probability")
-
-```
-
-If we overlay the two concentration distributions assuming [Normality](https://en.wikipedia.org/wiki/Normal_distribution), we will end up with the below figure. 
-
-```@example bayes
-using ACS 
-
-histogram(x,bins=5,normalize=:probability,label=false)
-plot!(Normal(9.5,0.7*std(x)),label="Toxic")
-plot!(Normal(2.5,std(x)),label="No effect",c=:black)
-
-xlabel!("Concentration (ppb)")
-ylabel!("Probability")
-
-```
-
-Now you are given a new sample to measure for the concentration of the drug. Your boss is only interested in whether this new sample is a no effect or a toxic case. After your measurement you will end up with the below results. 
-
-```@example bayes
-using ACS 
-
-histogram(x,bins=5,normalize=:probability,label=false)
-plot!(Normal(9.5,0.7*std(x)),label="Toxic")
-plot!(Normal(2.5,std(x)),label="No effect",c=:black)
-plot!([8.5,8.5],[0,0.4],label="Measurement",c=:blue)
-
-xlabel!("Concentration (ppb)")
-ylabel!("Probability")
-
-```
-
-When looking at your results, you intuitively will decide that this is a case of toxic levels. This is done by comparing the distance from the measurement to the apex of each distribution. 
-
-```@example bayes
-using ACS 
-
-histogram(x,bins=5,normalize=:probability,label=false)
-plot!(Normal(9.5,0.7*std(x)),label="Toxic",c=:red)
-plot!(Normal(2.5,std(x)),label="No effect",c=:black)
-plot!([8.5,8.5],[0,0.4],label="Measurement",c=:blue)
-
-plot!([8.5,9.5],[0.1675,0.1675],label="d1",c=:red)
-
-plot!([2.5,8.5],[0.1172,0.1172],label="d2",c=:black)
-
-xlabel!("Concentration (ppb)")
-ylabel!("Probability")
-
-```
-
-Performing such assessments visually is only possible when we are dealing with very clear-cut cases with limited number of dimensions and categories. When dealing with more complex systems, we need to have a more clear metrics to assign a sample to a specific group of measurements. To generate such metrics we can calculate the posterior probability of the measurement being part of a group, given a prior distribution (i.e. the distribution of each group). We can calculate these posterior probabilities via *pdf(-)* of **ACS.jl** package (implemented through package [Distributions.jl](https://juliastats.org/Distributions.jl/stable/)). So in this case we can perform these calculations as follows:
-
-```@example bayes
-using ACS 
-
-PT = pdf(Normal(9.5,0.7*std(x)),8.5)
-PnE = pdf(Normal(2.5,std(x)),8.5)
-P = [PT,PnE]
-
-```
-
-
-```@example bayes
-using ACS 
-
-histogram(x,bins=5,normalize=:probability,label=false)
-plot!(Normal(9.5,0.7*std(x)),label="Toxic")
-plot!(Normal(2.5,std(x)),label="No effect",c=:black)
-plot!([8.5,8.5],[0,0.4],label="Measurment",c=:blue)
-annotate!(6.5,0.28,string(round(PnE,digits=2)))
-annotate!(10,0.28,string(round(PT,digits=2)))
-
-xlabel!("Concentration (ppb)")
-ylabel!("Probability")
-
-```
-
-These calculations clearly show that the posterior probability of toxic level is larger than the one for the no-effect concentrations resulting in the classification of this new measurement. If dealing with more than one variable, then the product of the posterior probability of each variable will give you the multivariate posterior probability of a measurement being part of a class, given the prior distributions. 
-
-```math 
-
-P(A \mid B_{1:n}) = \prod _{i =1}^{n} P(A \mid B_{i})
-
-```
-
-### Uncertainty Assessment
-
-Let's assume that the figure above is related to the several measurements of the same drug in the wastewater. Our objective here is to estimate what the true estimation of the drug concentration in our samples is. The usual procedure here is to first assume a normal distribution calculating the mean and standard deviation of the data. 
-
-```@example bayes
-using ACS 
-
-histogram(x,bins=5,normalize=:probability,label=false)
-plot!(Normal(mean(x),std(x)),label="Distribution assuming normality")
-
-xlabel!("Concentration (ppb)")
-ylabel!("Probability")
-
-```
-This is clearly not the best distribution describing our dataset. Another strategy is a [nonparametric](https://en.wikipedia.org/wiki/Nonparametric_statistics) one i.e. [bootstrapping](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)). In this case we try to assess the distribution of mean and the standard deviation of the measurements. For example we can sample 85% of the *X* over each iteration, enabling the calculation of the mean and the standard deviation of the measurements without the normality assumption. 
-
-```@example bayes
-using ACS 
-
-function r_sample(x,n,prc)
-    m = zeros(n)
-    st = zeros(n)
-
-    for i =1:n 
-        tv1 = rand(x,Int(round(prc*length(x))))
-        m[i] = mean(tv1)
-        st[i] = std(tv1)
-
-    end 
-
-    return m, st 
-    
-end
-
-
-n = 10000
-prc = 0.85
-
-m, st = r_sample(x,n,prc)
-
-```
-
-Now if we plot these distributions we can see that the mean is around 5.3 and the standard deviation is around 3.4.
-
-```@example bayes
-using ACS 
-
-p1 = histogram(m,label="mean",normalize=:probability)
-xlabel!("Mean")
-ylabel!("Probablity")
-
-p2 = histogram(st,label="Standard deviation",normalize=:probability)
-xlabel!("Standard deviation")
-ylabel!("Probablity")
-
-plot(p1,p2,layout=(2,1))
+scatter(data[!,"Conc"],data[!,"Signal "], label=false)
+xlabel!("Mass calibrant (Fg)")
+ylabel!("Relative intensity (%)")
 
 
 ```
 
-However, these results do not give us a more clear picture of the distribution of the measurements, suggesting that the conventional methods may not be adequate for these assessment. Now let's us Bayesian statistics to tackle this issue. As first step, we can assume a flat/uniform prior distribution. Based on this assumption, our simplified Bayes equation will become: 
+As you can see, our measurements are not linear and/or continuous. Thus a simple linear model will not be an adequate estimator of this data. Also our data appears to consist of five clusters for each concentration range (i.e. independent variable). Let's try to model this data using a **decision tree**.
 
-```math 
+```@example DT
+using ACS
 
-P(A \mid B) \propto P(B \mid A) \times 1.
-
-```
-
-This set up of the Bayes Theorem results in so called [maximum likelihood estimate](https://en.wikipedia.org/wiki/Maximum_likelihood_estimation), which is similar to the outcome of the bootstrapping results. However, these results can be improved via incorporation of an informative prior distribution into our calculations. To do so we need to follow the below steps. 
-
-#### Step 1 (prior selection): 
-
-In this case, by looking at the distribution of the data we can consider a [gamma distribution](https://en.wikipedia.org/wiki/Gamma_distribution) as an adequate prior distribution for our data. Gamma distribution similar to normal distribution has two parameters: *k* shape and *``\theta``* scale. To estimate these parameters based on our measurements we need to fit this distribution to our data.   
-
-```@example bayes
-using ACS 
-
-pri = fit_mle(Gamma,x)
-
-histogram(x,bins=5,label="Data",normalize=true)
-plot!(fit_mle(Gamma, x),label="Model")
-xlabel!("Concentration (ppb)")
-ylabel!("Probablity")
+scatter(data[!,"Conc"],data[!,"Signal "], label="data")
+plot!([0,90],[0,100],label="Linear model")
+xlabel!("Mass calibrant (Fg)")
+ylabel!("Relative intensity (%)")
 
 
 ```
 
-#### Step 2 (assuming an average value):
+The first step to build a **decision tree** model is to find the root node (i.e. the first splitting point). Given that we are looking at only one dependent variable (i.e. the relative intensity), we will need to find the first splitting point only in this variable. We will look at the bi-variate case later on. To find the first splitting point, we start with injected masses larger than 2 (i.e. all our measurements except the first one). This implies that we have two groups where the injected mass is either smaller than 2 or larger than two. 
 
-In this step we assume that the true mean of or distribution is around 10 (this is only as example) and the mean actually has a normal distribution with a standard deviation same as *X*. By doing so, we can calculate ``P(A \mid B) = P(B \mid A) \times P(B)``, which is the probability of every measurement given the assumed average. The product of all these probabilities will result in the likelihood of 10 being the true mean of the distribution. Repeating this for all measured values, we will end up with the distribution of mean and its standard deviation. 
+```@example DT
+using ACS
 
-```@example bayes
-using ACS 
-
-function uncertainty_estimate(x,pri)
-    target = collect(range(minimum(x),maximum(x),length = 10000))       # Generate a set of potential mean values
-    post = zeros(length(target))                                        # Generate the posterior distribution vector
-
-    for i =1:length(target)
-
-        dist = Normal(target[i],std(x))                                 # Distribution of the assumed mean
-        tv = 1                                                          # Initialize the likelihood values
-        for j = 1:length(x)
-
-            tv = tv * pdf(dist,x[j]) * pdf(pri,x[j])                    # Updating the likelihood over each iteration
-
-        end
-
-        post[i] = tv
+scatter(data[!,"Conc"],data[!,"Signal "], label="data")
+plot!([0,2],[6,6],label="< 2")
+plot!([2,90],[mean(data[2:end,"Signal "]),mean(data[2:end,"Signal "])],label="> 2")
+xlabel!("Mass calibrant (Fg)")
+ylabel!("Relative intensity (%)")
 
 
-    end 
+```
+Here we can visually see that the group "< 2" is providing very accurate prediction (*RSS* = 0) while the second group is not able to predict the instrument response properly. To quantify this, we will use the *RSS* value for each mass of calibrant being the splitting point. It should be that for the first iteration of the splitting, we will use the point itself as we cannot calculate the mean of a single number.
 
-    post = post ./ sum(post)                                                # Normalize the posterior distribution
+```@example DT
+using ACS
 
-    return post, target
+RSS_l = data[1,"Signal "] - data[1,"Signal "] # 
+
+RSS_r = sum((data[2:end,"Signal "] .- mean(data[2:end,"Signal "])).^2)
+
+RSS = RSS_l + RSS_r
+
+
+```
+
+This process is repeated for every single breaking points. For example let's repeat these calculations for a mass of 44.3 Fg (i.e. 26th point).
+
+```@example DT
+using ACS
+
+split = 26
+
+RSS_l = sum((data[1:split,"Signal "] .- mean(data[1:split,"Signal "])).^2) 
+
+RSS_r = sum((data[split:end,"Signal "] .- mean(data[split:end,"Signal "])).^2)
+
+RSS = RSS_l + RSS_r
+
+
+```
+
+```@example DT
+using ACS
+
+scatter(data[!,"Conc"],data[!,"Signal "], label="data")
+plot!([0,data[!,"Conc"][split]],[mean(data[1:split,"Signal "]),mean(data[1:split,"Signal "])],label="< 44.3")
+plot!([data[!,"Conc"][split],90],[mean(data[split:end,"Signal "]),mean(data[split:end,"Signal "])],label="> 44.3")
+xlabel!("Mass calibrant (Fg)")
+ylabel!("Relative intensity (%)")
+
+
+```
+We can use the below for loop to calculate the *RSS* for all potential splitting points. 
+
+!!! warning
+    Please note that this code assumes that your data is sorted and thus it does not take into 
+    account the actual injected masses (i.e. the independent variable). If you want a more generic
+    solution, you need to take the independent variables into account when creating right and left sides!
+
+```@example DT
+using ACS
+
+ 
+RSS = zeros(length(data[!,"Signal "]))
+rss_l = zeros(length(data[!,"Signal "]))
+rss_r = zeros(length(data[!,"Signal "]))
+
+for i=1:length(data[!,"Signal "])
+    rss_l[i] = sum((data[1:i,"Signal "] .- mean(data[1:i,"Signal "])).^2) 
+
+    rss_r[i] = sum((data[i:end,"Signal "] .- mean(data[i:end,"Signal "])).^2)
+
+    RSS[i] = rss_l[i] + rss_r[i]
 end 
 
-post, target = uncertainty_estimate(x,pri)
+
+scatter(data[!,"Conc"],RSS, label="RSS",markersize = 5)
+scatter!(data[!,"Conc"],rss_l, label="RSS left", markersize = 2)
+scatter!(data[!,"Conc"],rss_r, label="RSS right", markersize = 2)
+xlabel!("Mass of calibrant Fg")
+ylabel!("RSS")
+
+```
+In the above plot we are able to clearly see both the splitting point and the contribution of each side (i.e. the left vs right RSS). For example for all the points with injection mass of < 17, the model prediction has little to no error in it whereas the model is not accurate at all for injection masses > 17. At the moment, our model has only one splitting point.
+
+```@example DT
+using ACS
+
+split = 10
+
+scatter(data[!,"Conc"],data[!,"Signal "], label="data")
+plot!([0,data[!,"Conc"][split]],[mean(data[1:split,"Signal "]),mean(data[1:split,"Signal "])],label="< 17")
+plot!([data[!,"Conc"][split],90],[mean(data[split:end,"Signal "]),mean(data[split:end,"Signal "])],label="> 17")
+xlabel!("Mass calibrant (Fg)")
+ylabel!("Relative intensity (%)")
 
 
 ```
-The example of assumed mean values would look like this. 
 
-```@example bayes
-using ACS 
+After the first splitting, we need to decide whether each side require further splitting. If we look at the left side the value of 6 (i.e. the model prediction) is fairly accurate prediction. However, we can further split these measurements to get even more accurate estimations. This added accuracy also comes with a high potential for overfitting. There are several methods to assess the presence of overfitting in our model. These approaches include setting a depth limit, setting a minimum number of points to a leaf, [information gain](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence), and [Gini impurity](https://en.wikipedia.org/wiki/Decision_tree_learning#Gini_impurity). Each of these approaches have their own advantages and disadvantages and you should decide the most adequate one, based on your knowledge of the data. 
 
-histogram(x,bins=5,label="Data",normalize=:probability)
-plot!(fit_mle(Gamma,x),label="Prior distribution")
-plot!(Normal(10.5,std(x)),label="Potential distribution I")
-plot!(Normal(8.5,std(x)),label="Potential distribution II")
-plot!(Normal(3.5,std(x)),label="Potential distribution III")
-#plot!(fit_mle(Normal, m),label="Model")
-xlabel!("Concentration (ppb)")
-ylabel!("Probability")
+!!! tip 
+    The most intuitive approach to avoid overfitting in tree based models is to set a minimum number of points in terminal leafs. This implies that if there are less than the set value points in a leaf that leaf is considered terminal and will not be considered for further splitting. This number (i.e. the minimum points per leaf) can be estimated by looking at the distribution of your data. Typically, the highest levels of accuracy and robustness is achieved by using a number between 5 and 20 points per leaf. 
+
+
+Now that the root of our **decision tree** is identified and we have decided that the left leaf is not going to be further split into more leafs, we need to improve our model for the right side of the splitting point. To do so, we can exclude the left leaf from our data and repeat the *RSS* calculations for the rest of the data. 
+
+```@example DT
+using ACS
+
+conc_1 = data[11:end,"Conc"]
+sig_1 = data[11:end,"Signal "]
+ 
+RSS1 = zeros(length(conc_1))
+rss_l1 = zeros(length(conc_1))
+rss_r1 = zeros(length(conc_1))
+
+for i=1:length(conc_1)
+    rss_l1[i] = sum((sig_1[1:i] .- mean(sig_1[1:i])).^2) 
+
+    rss_r1[i] = sum((sig_1[i:end] .- mean(sig_1[i:end])).^2)
+
+    RSS1[i] = rss_l1[i] + rss_r1[i]
+end 
+
+
+scatter(data[11:end,"Conc"],RSS1, label="RSS",markersize = 5)
+scatter!(data[11:end,"Conc"],rss_l1, label="RSS left", markersize = 2)
+scatter!(data[11:end,"Conc"],rss_r1, label="RSS right", markersize = 2)
+xlabel!("Mass of calibrant Fg")
+ylabel!("RSS")
 
 ```
 
-The final distribution on the other hand looks as below. Please note the resolution of this evaluation is highly dependent on the dataset. For example here we are generating a vector of 10000 members between 0 and 10, which may or may not be too fine. 
+As you can clearly see from the above plot the measurements larger than 68 Fg are grouped together and since the number of points in that leaf is smaller or equal to the set limit of 10 points, thus this is our second leaf. Currently our model has three potential predictions depending on the provided mass of the injected calibrant. For the two edge leafs, our model does very well in terms of accuracy while for the center leaf further splitting is necessary. We can perform this by repeating the above steps.  
 
-```@example bayes
-using ACS 
+```@example DT
+using ACS
 
-histogram(x,bins=5,label="Data",normalize=:probability)
-plot!(fit_mle(Gamma,x),label="Prior distribution")
-plot!(fit_mle(Normal, x),label="MLE")
-plot!(target,10^3 .* post,label="Posterior distribution * 1000",c=:black)
-#plot!(fit_mle(Normal, m),label="Model")
-xlabel!("Concentration (ppb)")
-ylabel!("Probablity")
+split1 = 10
+split2 = 40
+
+
+scatter(data[!,"Conc"],data[!,"Signal "], label="data")
+plot!([0,data[!,"Conc"][split1]],[mean(data[1:split1,"Signal "]),mean(data[1:split1,"Signal "])],label="< 17")
+
+plot!([data[!,"Conc"][split1],data[!,"Conc"][split2]],[mean(data[split1:split2,"Signal "]),mean(data[split1:split2,"Signal "])],label="17 < x  < 68")
+
+plot!([data[!,"Conc"][split2],90],[mean(data[split2:end,"Signal "]),mean(data[split2:end,"Signal "])],label="> 68")
+xlabel!("Mass calibrant (Fg)")
+ylabel!("Relative intensity (%)")
+
 
 ```
 
-As expected the predicted average based on the posterior probability distribution is very close to the one based on MLE. However, if we look at the uncertainty levels of this distribution (i.e. the ``\sigma``), we can see a much more accurate estimation of the distribution, which can be very important in different applications. 
+### Multivariate Case
 
-### Bayesian regression
+So far we have only looked at a univariate case. For a system with multiple variables, the process is the same as the univariate one and it is performed over each variable separately and then the minimum *RSS* value by the splitting points are compared, the variable with the smallest *RSS* value will take precedent. For example in case of our dataset, now we can use both variables in our model. 
 
-Bayesian statistics can also be used for solving regression problems. The [Bayesian regression](https://en.wikipedia.org/wiki/Bayesian_linear_regression) is an extension of the the uncertainty assessment, where the Bayes theorem is used to estimate the coefficients of a model starting from a flat prior for all the coefficients. The added step here is to use the sum square errors to improve the prior distribution of the coefficients. Typically these complex modeling problems are solved using a combination of Bayes theorem and Monte Carlo simulations 
+```@example DT
+using ACS
+
+scatter(data[!,"Conc"][data[!,"Mode"] .== 1],data[!,"Signal "][data[!,"Mode"] .== 1], label="Positive mode")
+scatter!(data[!,"Conc"][data[!,"Mode"] .== -1],data[!,"Signal "][data[!,"Mode"] .== -1], label="Negative mode")
+xlabel!("Mass calibrant (Fg)")
+ylabel!("Relative intensity (%)")
+
+```
+
+In this case, the mass of the calibrant will still be the root node of our tree while the second node will be related to the acquisition mode.
+
+## Random Forest
+
+As it was mentioned above **random forest** was introduced as a means for overcoming the issues associated with the **decision trees** namely the lack of accuracy and robustness. The basic concept behind **random forest** is the use of multiple trees and the resampling strategies such as [bootstrapping](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)). Here we first generate a large number of trees (e.g. hundreds) and with each of those trees we model a bootstrap sample of the original data. This implies that no two trees have the same dataset to model and our **random forest** model has as many prediction as the number of trees. At this point the **random forest** model tallies the distribution of the predictions and outputs the prediction with the highest likelihood (i.e. the most frequent prediction). This strategy, usually, results in a much more robust and accurate models, mitigating the limitations of **decision trees**. When building **random forest** models, one can decide how to distribute the data across the trees. For example, one of the most communly used approaches to build bootstrapping samples is [bagging](https://en.wikipedia.org/wiki/Bootstrap_aggregating), where not all the variables and the measurements are given to each tree. When performing **random forest** modeling, independently from the used package, there are three [hyperparameters](https://en.wikipedia.org/wiki/Hyperparameter_(machine_learning)) that must be optimized namely: the number of trees, the minimum points per leaf, and bootstrapping conditions. Each of these parameters have their own criterion for being optimized and thus they need to be considered all together. For example, we want to keep the number of trees to the minimum while having highest possible accuracy of the [cross validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) and [test set](https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets). One way to deal with this is to perform [grid search](https://scikit-learn.org/stable/modules/grid_search.html), which could be computationally expensive, depending on the resolution needed. 
+
+!!! tip 
+    For the number of trees usually you are looking for the optimized number between 100 and 500 trees. Please note this is highly case dependent and may not be correct for your specific dataset. For the bootstrapping parameter, in case of classification a square root of the number of variables and for regression 1/3 of the number of variable can be used as starting points. 
+
+!!! tip 
+    When building any type of model, you need to make sure that the variables are [scaled](https://en.wikipedia.org/wiki/Feature_scaling). Otherwise, the variable with the largest magnitude will dominate your model, even though, it may not be the most relevant variable to the model.
+
+## Packages 
+
+The package [ScikitLearn.jl](https://github.com/cstjean/ScikitLearn.jl) which is a julia wrapper of the [python package](https://scikit-learn.org/stable/index.html) provides access to a wide variety of **random forest** implementations. Below is an example of the usage case for a classification problem.
+
+```@example DT
+using ACS
+
+@sk_import ensemble: RandomForestClassifier
+
+data = dataset("datasets", "iris")
+
+y = data[!,"Species"]
+Y = zeros(length(y))
+Y[y .== "setosa"] .= 1
+Y[y .== "versicolor"] .= 2
+X = Matrix(data[:,1:4]); # The first four columns are selected for this
+
+clf = RandomForestClassifier(n_estimators=200, min_samples_leaf=5,
+oob_score =true, max_features= "auto",n_jobs=-1).fit(X,Y)
+accuracy_cl = clf.score(X,Y)
+
+```
+
+!!! warning 
+    Please note that the above implementation is not following the best practices for this type of modeling as the data is not split into training set and test set. Also, no cross-validation is performed. Finally none of the hyperparameters here have been optimized.  
 
 ## Additional Resources
 
-You can find a lot of resources related to Bayesian Statistics and inference ([book](https://bayesiancomputationbook.com/welcome.html)), [julia package](https://turing.ml/v0.23/), and [python package](https://juanitorduz.github.io/intro_pymc3/). Additionally, the following videos are highly informative for better learning the Bayesian statistical concepts. 
-* [MIT Open Courseware](https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/resources/lecture-17-video/)
-* [Datacamp](https://www.youtube.com/watch?v=3OJEae7Qb_o&themeRefresh=1) 
+There are several resources (including videos on YouTube) for better understanding how **decision trees** and **random forests** work. The documentation of [SKLearn package](https://scikit-learn.org/stable/index.html) is one of the best resources for this. Additionally, you can follow this lecture by [Kilian Weinberger](https://www.youtube.com/watch?v=4EOCQJgqAOY) from Cornell. 
