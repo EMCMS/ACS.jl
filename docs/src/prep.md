@@ -8,7 +8,7 @@
 
 2.	Execute the file and follow the installation steps. Make sure to write down the installation path or use the default path (This information will be required in a later step).
 
-![julia_down](https://raw.githubusercontent.com/EMCMS/ACS.jl/tree/main/docs/assets/juliaLTS.png)
+![julia_down](https://github.com/EMCMS/ACS.jl/blob/main/docs/assets/juliaLTS.PNG?raw=true)
 
 
 
@@ -23,7 +23,7 @@
 
 5.	After installation restart VS Code for the next steps.
 
-![julia_ex](https://raw.githubusercontent.com/EMCMS/ACS.jl/tree/main/docs/assets/JuliaExtension.PNG)
+![julia_ex](https://github.com/EMCMS/ACS.jl/blob/main/docs/assets/JuliaExtension.PNG?raw=true)
 
 
 
@@ -55,15 +55,17 @@ To ensure that VS Code can find the installed Julia language:
 - MacintoshHD/users/[INSERTUSERNAME]/Applications/Julia-x.x.x.app/Contents/Resources/julia/bin/Julia
 
 
-![julia_path](https://raw.githubusercontent.com/EMCMS/ACS.jl/tree/main/docs/assets/executablePath.png)
+![julia_path](https://github.com/EMCMS/ACS.jl/blob/main/docs/assets/executablePath.PNG?raw=true)
+
+
 
 
 
 ### Julia package installation
 To install packages we first need to start up Julia. To open the Julia REPL for executing commands press **Crtl+Shift+P** and search for **Julia: Start REPL** and press enter, opening up the following window:
 
-![REPL](https://raw.githubusercontent.com/EMCMS/ACS.jl/tree/main/docs/assets/REPL.png)
-![REPL](tree/main/docs/assets/REPL.png)
+![REPL](https://github.com/EMCMS/ACS.jl/blob/main/docs/assets/REPL.png?raw=true)
+
 
 In the REPL execute the following lines of code in order to install packages. After a single command is executed, “julia >” re-appears and the next line can be executed (it might take a bit for the packages to finish downloading). Also, the lines are capital sensitive.
 
