@@ -18,4 +18,4 @@ This course is built for MSc of [Analytical (Chemistry) Sciences](https://www.uv
 10. Bayesian statistics I 
 11. Bayesian statistics II
 
-For more information about the course and us, please visit us at [[https://emcms.info](https://emcms.info/). 
+For more information about the course and us, please visit us at [https://emcms.info](https://emcms.info/). 
