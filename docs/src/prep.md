@@ -64,7 +64,7 @@ To ensure that VS Code can find the installed Julia language:
 ### Julia package installation
 To install packages we first need to start up Julia. To open the Julia REPL for executing commands press **Crtl+Shift+P** and search for **Julia: Start REPL** and press enter, opening up the following window:
 
-![REPL](https://github.com/EMCMS/ACS.jl/blob/main/docs/assets/REPL.png?raw=true)
+![REPL](https://github.com/EMCMS/ACS.jl/blob/main/docs/assets/REPL.PNG?raw=true)
 
 
 In the REPL execute the following lines of code in order to install packages. After a single command is executed, “julia >” re-appears and the next line can be executed (it might take a bit for the packages to finish downloading). Also, the lines are capital sensitive.
