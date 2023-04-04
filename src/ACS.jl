@@ -28,7 +28,8 @@ include("ACS_Extra_Fun.jl")
 
 export dataset, plot, plot!, scatter, scatter!, xlabel!, ylabel!, title!, @sk_import, eigvals, eigvecs, transpose, svd, diagm,
 pinv, diag, xlims!, ylims!, describe, mean, median, bar, bar!, diagind, hclust, sp, pairwise, kmeans, assignments, annotate!, histogram,
-histogram!, Normal, Gamma, fit_mle, std, pdf, cdf, read_ACS_data, cross_val_score, train_test_split, sample, CSV, DataFrame, cov, cor, Diagonal, I, inv   
+histogram!, Normal, Gamma, fit_mle, std, pdf, cdf, read_ACS_data, cross_val_score, train_test_split, sample, CSV, DataFrame, cov, cor, Diagonal, I, inv, 
+heatmap, heatmap!, dist_calc   
 # Write your package code here.
 
 

@@ -126,7 +126,7 @@ ylabel!("Y")
 So far, we have done all our calculations based on one dimensional data. Now we can move towards two and more dimension. One of the main things to consider when increasing the number of dimensions is the distance calculations. In the above examples, we have use the [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance), which is one of many [distance metrics](https://en.wikipedia.org/wiki/Hierarchical_clustering#Similarity_metric). In general terms the Euclidean distance can be expressed as below, where ``d_{m,n}`` represents the distance between points *m* and *n*. This is based on the [Pythagorean distance](https://en.wikipedia.org/wiki/Euclidean_distance). 
 
 ```math
-d_{m,n} = \sqrt{\sum (x_{m} - x_{n})^{2}}}.
+d_{m,n} = \sqrt{\sum{(x_{m} - x_{n})^{2}}}.
 
 ```
 
