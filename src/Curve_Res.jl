@@ -293,7 +293,7 @@ function MonotoneRegression(x::Array{Float64,1}, w = nothing)
 #The number of maximum iterations for constraints can be set by `constraintiters`.
 #Tauler, R. Izquierdo-Ridorsa, A. Casassas, E. Simultaneous analysis of several spectroscopic titrations with self-modelling curve resolution.Chemometrics and Intelligent Laboratory Systems. 18, 3, (1993), 293-300.
 #"""
-function MCR_ALS(X::Union{Array{Float64,1}, Array{Float64,2}},
+function MCR_ALS_jw_March29(X::Union{Array{Float64,1}, Array{Float64,2}},
     C::Union{Nothing, Array{Float64,1}, Array{Float64,2}},
     S::Union{Nothing, Array{Float64,1}, Array{Float64,2}};
     Factors::Int = 3, 
