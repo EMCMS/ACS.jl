@@ -25,11 +25,16 @@ using HDF5
 using JLD
 
 include("ACS_Extra_Fun.jl")
+include("Curve_Res.jl")
 
 export dataset, plot, plot!, scatter, scatter!, xlabel!, ylabel!, title!, @sk_import, eigvals, eigvecs, transpose, svd, diagm,
 pinv, diag, xlims!, ylims!, describe, mean, median, bar, bar!, diagind, hclust, sp, pairwise, kmeans, assignments, annotate!, histogram,
 histogram!, Normal, Gamma, fit_mle, std, pdf, cdf, read_ACS_data, cross_val_score, train_test_split, sample, CSV, DataFrame, cov, cor, Diagonal, I, inv, 
+<<<<<<< HEAD
 heatmap, heatmap!, dist_calc, randi, zlabel!, scatter3d, scatter3d!, savefig    
+=======
+heatmap, heatmap!, dist_calc, NMF, SIMPLE, FNNLS, UnimodalFixedUpdate, UnimodalUpdate, UnimodalLeastSquares, MonotoneRegression, MCR_ALS_jw_March29
+>>>>>>> main
 # Write your package code here.
 
 
