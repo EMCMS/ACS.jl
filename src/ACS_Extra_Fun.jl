@@ -39,3 +39,27 @@ end
 
 
 #file_name = "mtcars.csv"
+
+######################################################
+# Random integers between two numbers 
+
+# a = 1 
+# b = 100
+# n = 100 
+
+function randi(a,b,n)
+
+    if a > b
+
+        out = Int.(round.(b .+ (a - b) .* rand(n)))
+    elseif a < b
+        out = Int.(round.(a .+ (b - a) .* rand(n)))
+    else 
+        println("a and b should be different!")
+        out = []
+
+    end 
+
+    return(out)
+
+end 

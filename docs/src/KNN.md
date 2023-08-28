@@ -31,15 +31,45 @@ This dataset can be fitted with a linear model using the [least square](https://
 ### Step 1: 
 To calculate the distances, we will use the [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance). Other distance metrics are also possible but for this example we will work the simplest one. For the distance calculations we ignore the *Y* matrix and only focus on the *X* matrix. 
 
+
 ```@example knn
 using ACS
 
-
-
-dist = ACS.dist_calc([x,x])
+dist = dist_calc(hcat(x,x))
 
 # Plotting the data
-ACS.heatmap(dist,label = false)
+heatmap(dist,label = false)
+
+
+```
+
+As expected the values in the distance matrix are directly correlated with the ``X_{i}``, which is caused by the fact that our values in the *X* matrix are sorted. For the next step we will set the *k* value to 5, suggesting that our model will use 5 closest entries to estimate the value of that query. To do this we need to first set the diagonal of our distance matrix to "Inf" as it is currently filled with zeros. 
+
+
+```@example knn
+using ACS
+
+dist_ = deepcopy(dist)
+
+dist_[diagind(dist_)] .= Inf                      # Set the diagonal to inf, which is very helpful when searching for minimum distance
+
+# Plotting the data
+heatmap(dist_,label = false)
+
+
+```
+
+Then we will sort our distance matrix to combine the measurements into groups of 5. Here we can use the below code to perform the grouping of our data. The function [*sortperm(-)*](https://docs.julialang.org/en/v1/base/sort/) is the way to go.
+
+```@example knn
+using ACS
+
+p = sort(dist)
+
+dist_[diagind(dist_)] .= Inf                      # Set the diagonal to inf, which is very helpful when searching for minimum distance
+
+# Plotting the data
+heatmap(dist_,label = false)
 
 
 ```
