@@ -61,7 +61,7 @@ heatmap(dist_,label = false)
 
 Then we will sort our distance matrix to combine the measurements into groups of 5. Here we can use the below code to perform the grouping of our data. The function [*sortperm(-)*](https://docs.julialang.org/en/v1/base/sort/) is the way to go.
 
-```@example knn
+```julia 
 using ACS
 
 p = sort(dist)
