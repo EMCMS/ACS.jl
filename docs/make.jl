@@ -4,7 +4,7 @@ using Documenter, ACS
 
 
 makedocs(
-    modules = [Documenter, ACS],
+    modules = [ACS],
     build = "build",
     format = Documenter.HTML(assets=["assets/init.js"]),
     clean = true,

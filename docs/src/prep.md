@@ -65,7 +65,7 @@ To install packages we first need to start up Julia. To open the Julia REPL for 
 ![REPL](https://github.com/EMCMS/ACS.jl/blob/main/docs/assets/REPL.PNG?raw=true)
 
 
-In the REPL execute the following lines of code in order to install packages. After a single command is executed, “julia >” re-appears and the next line can be executed (it might take a bit for the packages to finish downloading). Also, the lines are capital sensitive.
+In the REPL execute the following lines of code in order to install packages. After a single command is executed, “julia >” re-appears and the next line can be executed (it might take a bit for the packages to finish downloading). Also, the lines are capital sensitive. In case there is a space (" ") in the user name, see the next section for installing the ACS package.
 
 ```julia
 using Pkg
@@ -79,3 +79,36 @@ The second package that is being installed contains all relevant functions and i
 
 !!! tip 
     For basic julia programming please check our tutorials as a part of the documentation of package [*DataSci4Chem.jl*](https://emcms.github.io/DataSci4Chem.jl/dev/). 
+
+### Installing the ACS package with " " in username
+The ACS package makes use of other packages, which includes Conda. However, the Conda package cannot install itself and will error if there is a space (" ") in the username (i.e., the path where Conda wants to install itself). Therefore, the following steps need to be followed to get Conda working. Make sure to carefully read the comments that follow after a #.
+
+```julia
+using Pkg
+# Download Conda
+Pkg.add("Conda")
+# Start up
+using Conda
+# Change the installation path of Conda
+ENV["CONDA_JL_HOME"] = "C:\\Conda-Julia"      #default/example path
+
+
+# Now, before we can continue, make sure that this folder exist. Especially if a different path is chosen then the default.
+# To create the folder in the default path run:
+mkdir("C:\\Conda-Julia")
+
+
+# Download PyCall package that uses Conda -> Ignore the error!
+Pkg.add("PyCall")
+Pkg.build("PyCall")
+
+
+# Install the ACS package
+Pkg.add(PackageSpec(url="https://github.com/EMCMS/ACS.jl"))
+
+#!!! re-start Julia !!!
+
+# Now the ACS package can be used through:
+using ACS
+
+```

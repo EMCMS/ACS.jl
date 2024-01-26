@@ -236,7 +236,7 @@ As it was mentioned above **random forest** was introduced as a means for overco
 
 The package [ScikitLearn.jl](https://github.com/cstjean/ScikitLearn.jl) which is a julia wrapper of the [python package](https://scikit-learn.org/stable/index.html) provides access to a wide variety of **random forest** implementations. Below is an example of the usage case for a classification problem.
 
-```@example DT
+```julia 
 using ACS
 
 @sk_import ensemble: RandomForestClassifier
