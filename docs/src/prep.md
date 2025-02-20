@@ -4,7 +4,7 @@
 
 ## Installation
 ### Julia 
-1.	Download the long term support (LTS) release for Julia from: [https://julialang.org/downloads/](https://julialang.org/downloads/)
+1.	Download the long term support (LTS) release for Julia from: [https://julialang.org/downloads/](https://julialang.org/downloads/#long_term_support_release)
 
 2.	Execute the file and follow the installation steps. Make sure to write down the installation path or use the default path (This information will be required in a later step).
 
@@ -78,7 +78,7 @@ Pkg.add(PackageSpec(url="https://github.com/EMCMS/ACS.jl"))
 The second package that is being installed contains all relevant functions and information for the Advanced Chemometrics and Statistics course.
 
 !!! tip 
-    For basic julia programming please check our tutorials as a part of the documentation of package [*DataSci4Chem.jl*](https://emcms.github.io/DataSci4Chem.jl/dev/). 
+    For basic julia programming please check our tutorials as a part of the documentation of package [*DataSci4Chem.jl*](https://emcms.github.io/DataSci4Chem.jl). 
 
 ### Installing the ACS package with " " in username
 The ACS package makes use of other packages, which includes Conda. However, the Conda package cannot install itself and will error if there is a space (" ") in the username (i.e., the path where Conda wants to install itself). Therefore, the following steps need to be followed to get Conda working. Make sure to carefully read the comments that follow after a #.
