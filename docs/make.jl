@@ -16,8 +16,8 @@ makedocs(
         "HCA" => "HCA.md",
         "k-means" => "KMeans.md",
         "Decision trees" => "DT_RF.md",
-        "Bayesian Statistics" => "Bayes.md",
-        "k-nearst neighbor" => "KNN.md"
+        "Bayesian Statistics" => "Bayes.md"#,
+        #"k-nearst neighbor" => "KNN.md"
     ]
 )
 
