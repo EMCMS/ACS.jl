@@ -6,7 +6,6 @@ using Documenter, ACS
 makedocs(
     modules = [ACS],
     build = "build",
-    format = Documenter.HTML(assets=["assets/init.js"]),
     clean = true,
     sitename = "ACS.jl",
     pages = [
@@ -25,7 +24,7 @@ deploydocs(
     repo = "github.com/EMCMS/ACS.jl.git",
     target = "build",
     branch = "gh-pages",
-    #push_preview = true,
+    push_preview = true,
 )
 
 # include("/Users/saersamanipour/Desktop/dev/pkgs/ACS/docs/make.jl") 
