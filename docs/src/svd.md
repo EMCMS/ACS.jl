@@ -229,8 +229,8 @@ At this point we are assuming that we do not have any idea about the plant speci
 
 ```@example iris
 
- bar(V[:,1] ./ sum(abs.(V)),label="First SV")
- bar!(V[:,2] ./ sum(abs.(V)),label="Second SV")
+ bar(V[:,1],label="First SV")
+ bar!(V[:,2],label="Second SV")
  xlabel!("Variable Nr")
  ylabel!("Importance")
  #ylims!(-0.1,0.1)
@@ -346,25 +346,23 @@ In practice:
 
 ```@example iris
 
- U_test = X_ts * pinv(D*transpose(V))
+ U_test = X_ts * V * inv(D)
 
 
 ```
-```julia
+```@example iris
 
  scatter(U[:,1],U[:,2],label=["Setosa" "Versicolor" "Virginica"], group = Y_tr)
  plot!([-0.15,0],[0.05,0.05],label="Setosa")
  plot!([-0.15,0],[-0.04,-0.04],label="Virginica")
- scatter!(U_test[Y_ts[:] .== "setosa" ,1],U_test[Y_ts[:] .== "setosa",2],label="Setosa",marker=:d)
- scatter!(U_test[Y_ts[:] .== "versicolor",1],U_test[Y_ts[:] .== "versicolor",2],label="Versicolor",marker=:d)
- scatter!(U_test[Y_ts[:] .== "virginica",1],U_test[Y_ts[:] .== "virginica",2],label="Virginica",marker=:d)
+ scatter!(U_test[:,1],U_test[:,2],label="Random points",marker=:star,ms=10,alpha=0.5)
  xlabel!("First Singular value (81%)")
  ylabel!("Second Singular value (14%)")
 
 
 ```
 
-As it can be seen from the results of the test set, our model is not prefect but it does well for most cases. It should be noted that steps such as data pre-treatment and the use of supervised methods may improve the results of your cluster analysis. The use of **SVD** for prediction is not recommended. It must be mainly used for the dimension reduction and data exploration.  
+As it can be seen from the results of the test set, our model is doing well for most cases. It should be noted that steps such as data pre-treatment and the use of supervised methods may improve the results of your cluster analysis. The use of **SVD** for prediction is not recommended. It must be mainly used for the dimension reduction and data exploration.  
 
 ### Regression
 
