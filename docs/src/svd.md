@@ -339,7 +339,7 @@ The next step is to calculate the score values for the measurements in the test 
 ```math
 X = UDV^{T}\\
 
-U_{test} = X \times (DV^{T})^{-1}
+U_{test} = X \times V \times (D)^{-1}
 
 ```
 In practice:
