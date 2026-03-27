@@ -24,6 +24,7 @@ using Distances
 using StatsBase
 using HDF5
 using JLD
+using IJulia 
 
 include("ACS_Extra_Fun.jl")
 include("Curve_Res.jl")
